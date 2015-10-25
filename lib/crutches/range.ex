@@ -4,7 +4,7 @@ defmodule Crutches.Range do
   """
 
   @doc ~S"""
-  Compare two ranges and see if they overlap each other
+  Compare two ranges and see if they overlap each other.
 
   ## Examples
 
@@ -24,69 +24,79 @@ defmodule Crutches.Range do
     true
   """
   @spec overlaps?(Range.t, Range.t) :: boolean
-  def overlaps?(a..b, x..y) do
-    a in x..y || b in x..y || x in a..b || y in a..b
+  def overlaps?(a..b = range1, x.._ = range2) do
+    (a in range2) or (b in range2) or (x in range1)
   end
 
-
   @doc ~S"""
-  Returns the intersection of two ranges, or nil if there is no intersection.
+  Returns a range containing the range shared in common between `range1` and
+  `range2`.
+  Returns `nil` if there is no intersection.
+
   Note that the returned range, if any, will always be in ascending order (the
   first element is <= the last element).
 
   ## Examples
 
-    iex> Range.intersection(1..5, 4..8)
-    4..5
+      iex> Range.intersection(1..5, 4..8)
+      4..5
 
-    iex> Range.intersection(1..4, 4..8)
-    4..4
+      iex> Range.intersection(1..4, 4..8)
+      4..4
 
-    iex> Range.intersection(-1..4, -3..8)
-    -1..4
+      iex> Range.intersection(-1..4, -3..8)
+      -1..4
 
-    iex> Range.intersection(1..5, 6..8)
-    nil
+      iex> Range.intersection(1..5, 6..8)
+      nil
 
-    iex> Range.intersection(5..3, 2..4)
-    3..4
+      iex> Range.intersection(5..3, 2..4)
+      3..4
+
+      iex> Range.intersection(5..5, 5..5)
+      5..5
   """
   @spec intersection(Range.t, Range.t) :: Range.t | nil
-  def intersection(range_1, range_2) do
-    if overlaps?(range_1, range_2) do
-      a..b = normalize_order(range_1)
-      x..y = normalize_order(range_2)
+  def intersection(range1, range2) do
+    if overlaps?(range1, range2) do
+      a..b = normalize_order(range1)
+      x..y = normalize_order(range2)
       max(a, x)..min(b, y)
     else
       nil
     end
   end
 
-
   @doc ~S"""
-  Returns the union of two ranges, or nil if there is no union.
-  Note that the returned range, if any, will always be in ascending order (the
-  first element is <= the last element).
+  Returns the union of two ranges, or `nil` if there is no union.
+
+  A union the represented by the smallest element and the biggest integers in
+  both ranges, provided that they overlap.
+  
+  Note that the returned range, if any, will be in ascending order.
 
   ## Examples
 
-    iex> Range.union(1..5, 4..8)
-    1..8
+      iex> Range.union(1..5, 4..8)
+      1..8
 
-    iex> Range.union(-3..4, -1..8)
-    -3..8
+      iex> Range.union(-1..8, -3..4)
+      -3..8
 
-    iex> Range.union(1..3, 4..6)
-    nil
+      iex> Range.union(1..3, 4..6)
+      nil
 
-    iex> Range.union(1..3, 3..6)
-    1..6
+      iex> Range.union(1..3, 3..6)
+      1..6
+
+      iex> Range.union(3..6, 1..3)
+      1..6
   """
   @spec union(Range.t, Range.t) :: Range.t | nil
-  def union(range_1, range_2) do
-    if overlaps?(range_1, range_2) do
-      a..b = normalize_order(range_1)
-      x..y = normalize_order(range_2)
+  def union(range1, range2) do
+    if overlaps?(range1, range2) do
+      a..b = normalize_order(range1)
+      x..y = normalize_order(range2)
       min(a, x)..max(b, y)
     else
       nil
