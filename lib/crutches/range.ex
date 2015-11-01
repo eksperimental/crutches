@@ -4,7 +4,7 @@ defmodule Crutches.Range do
   """
 
   @doc ~S"""
-  Compare two ranges and see if they overlap each other.
+  Determines if two ranges overlap each other.
 
   ## Examples
 
@@ -26,6 +26,43 @@ defmodule Crutches.Range do
   @spec overlaps?(Range.t, Range.t) :: boolean
   def overlaps?(a..b = range1, x.._ = range2) do
     (a in range2) or (b in range2) or (x in range1)
+  end
+
+  @doc ~S"""
+  Determines if two ranges are contiguos.
+
+  Note that the order of the limits does not matter to determine whether the ranges are contiguous
+  or not (eg. `1..3` and `4..6` are contiguos, same as `3..1` and `4..6`).
+
+  If the ranges overlap each other, it will return `false`.
+
+  ## Examples
+
+    iex> Range.contiguous?(1..4, 5..8)
+    true
+
+    iex> Range.contiguous?(1..4, 0..-4)
+    true
+
+    # Ranges overlap
+    iex> Range.contiguous?(1..4, 0..1)
+    false
+
+    iex> Range.contiguous?(1..4, 6..8)
+    false
+
+    iex> Range.contiguous?(1..5, 4..8)
+    false
+  """
+  @spec contiguous?(Range.t, Range.t) :: boolean
+  def contiguous?(range1, range2) do
+    a..b = normalize_order(range1)
+    x..y = normalize_order(range2)
+    if (b + 1 == x) or (y + 1 == a) do
+      true
+    else
+      false
+    end
   end
 
   @doc ~S"""
@@ -71,7 +108,7 @@ defmodule Crutches.Range do
   Returns the union of two ranges, or `nil` if there is no union.
 
   A union the represented by the smallest element and the biggest integers in
-  both ranges, provided that they overlap.
+  both ranges, provided that the ranges overlap or are contiguous.
   
   Note that the returned range, if any, will be in ascending order.
 
@@ -84,7 +121,10 @@ defmodule Crutches.Range do
       -3..8
 
       iex> Range.union(1..3, 4..6)
-      nil
+      1..6
+
+      iex> Range.union(1..1, 2..2)
+      1..2
 
       iex> Range.union(1..3, 3..6)
       1..6
@@ -94,7 +134,7 @@ defmodule Crutches.Range do
   """
   @spec union(Range.t, Range.t) :: Range.t | nil
   def union(range1, range2) do
-    if overlaps?(range1, range2) do
+    if overlaps?(range1, range2) or contiguous?(range1, range2) do
       a..b = normalize_order(range1)
       x..y = normalize_order(range2)
       min(a, x)..max(b, y)
