@@ -3,32 +3,7 @@ defmodule Crutches.Range do
   Convenience functions for ranges.
   """
 
-  @doc ~S"""
-  Determines if two ranges overlap each other.
-
-  ## Examples
-
-    iex> Range.overlaps?(1..5, 4..6)
-    true
-
-    iex> Range.overlaps?(1..5, 7..9)
-    false
-
-    iex> Range.overlaps?(-1..-5, -4..-6)
-    true
-
-    iex> Range.overlaps?(-1..-5, -7..-9)
-    false
-
-    iex> Range.overlaps?(5..1, 6..4)
-    true
-  """
-  @spec overlaps?(Range.t, Range.t) :: boolean
-  def overlaps?(a..b = range1, x.._ = range2) do
-    (a in range2) or (b in range2) or (x in range1)
-  end
-
-  @doc ~S"""
+  @doc """
   Determines if two ranges are contiguos.
 
   Note that the order of the limits does not matter to determine whether the ranges are contiguous
@@ -38,21 +13,21 @@ defmodule Crutches.Range do
 
   ## Examples
 
-    iex> Range.contiguous?(1..4, 5..8)
-    true
+      iex> Range.contiguous?(1..4, 5..8)
+      true
 
-    iex> Range.contiguous?(1..4, 0..-4)
-    true
+      iex> Range.contiguous?(1..4, 0..-4)
+      true
 
-    # Ranges overlap
-    iex> Range.contiguous?(1..4, 0..1)
-    false
+      # Ranges overlap
+      iex> Range.contiguous?(1..4, 0..1)
+      false
 
-    iex> Range.contiguous?(1..4, 6..8)
-    false
+      iex> Range.contiguous?(1..4, 6..8)
+      false
 
-    iex> Range.contiguous?(1..5, 4..8)
-    false
+      iex> Range.contiguous?(1..5, 4..8)
+      false
   """
   @spec contiguous?(Range.t, Range.t) :: boolean
   def contiguous?(_.._=range1, _.._=range2) do
@@ -65,7 +40,7 @@ defmodule Crutches.Range do
     end
   end
 
-  @doc ~S"""
+  @doc """
   Returns a range containing the range shared in common between `range1` and
   `range2`.
   Returns `nil` if there is no intersection.
@@ -105,6 +80,31 @@ defmodule Crutches.Range do
   end
 
   @doc """
+  Determines if two ranges overlap each other.
+
+  ## Examples
+
+      iex> Range.overlaps?(1..5, 4..6)
+      true
+
+      iex> Range.overlaps?(1..5, 7..9)
+      false
+
+      iex> Range.overlaps?(-1..-5, -4..-6)
+      true
+
+      iex> Range.overlaps?(-1..-5, -7..-9)
+      false
+
+      iex> Range.overlaps?(5..1, 6..4)
+      true
+  """
+  @spec overlaps?(Range.t, Range.t) :: boolean
+  def overlaps?(a..b = range1, x.._ = range2) do
+    (a in range2) or (b in range2) or (x in range1)
+  end
+
+  @doc """
   Swaps the order of the first and last limits in the range.
 
   ## Examples
@@ -129,17 +129,17 @@ defmodule Crutches.Range do
 
   ## Examples
 
-    iex> Range.sort(0..10)
-    0..10
+      iex> Range.sort(0..10)
+      0..10
 
-    iex> Range.sort(10..0)
-    0..10
+      iex> Range.sort(10..0)
+      0..10
 
-    iex> Range.sort(0..10, :descending)
-    10..0
+      iex> Range.sort(0..10, :descending)
+      10..0
 
-    iex> Range.sort(10..0, :descending)
-    10..0
+      iex> Range.sort(10..0, :descending)
+      10..0
   """
   @spec sort(Range.t, :ascending | :descending) :: Range.t
   def sort(range, order \\ :ascending)
@@ -153,7 +153,7 @@ defmodule Crutches.Range do
     range
   end
 
-  @doc ~S"""
+  @doc """
   Returns the union of two ranges, or `nil` if there is no union.
 
   A union the represented by the smallest element and the biggest integers in
