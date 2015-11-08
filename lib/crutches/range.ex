@@ -4,6 +4,28 @@ defmodule Crutches.Range do
   """
 
   @doc """
+  Determines if two ranges are congruent (i.e. that both cover the same range, regardless the order
+  of their limits).
+
+  ## Examples:
+
+      iex> Range.congruent?(1..5, 5..1)
+      true
+
+      iex> Range.congruent?(1..5, 1..5)
+      true
+
+      iex> Range.congruent?(1..5, 2..5)
+      false
+  """
+  @spec congruent?(Range.t, Range.t) :: boolean
+  def congruent?(range1, range2)
+  def congruent?(a..b, x..y) when (a == x and b == y) or (a == y and b == x),
+    do: true
+  def congruent?(_.._, _.._),
+    do: false
+
+  @doc """
   Determines if two ranges are contiguos.
 
   Note that the order of the limits does not matter to determine whether the ranges are contiguous
