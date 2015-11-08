@@ -75,20 +75,17 @@ defmodule Crutches.Range do
       iex> Range.intersection(1..5, 4..8)
       4..5
 
-      iex> Range.intersection(1..4, 4..8)
-      4..4
-
       iex> Range.intersection(-1..4, -3..8)
       -1..4
 
-      iex> Range.intersection(1..5, 6..8)
-      nil
-
-      iex> Range.intersection(5..3, 2..4)
-      3..4
+      iex> Range.intersection(1..4, 4..8)
+      4..4
 
       iex> Range.intersection(5..5, 5..5)
       5..5
+
+      iex> Range.intersection(1..5, 6..8)
+      nil
   """
   @spec intersection(Range.t, Range.t) :: Range.t | nil
   def intersection(range1, range2)
@@ -115,12 +112,6 @@ defmodule Crutches.Range do
       true
 
       iex> Range.overlaps?(1..5, 7..9)
-      false
-
-      iex> Range.overlaps?(-1..-5, -4..-6)
-      true
-
-      iex> Range.overlaps?(-1..-5, -7..-9)
       false
 
       iex> Range.overlaps?(5..1, 6..4)
@@ -164,9 +155,6 @@ defmodule Crutches.Range do
 
       iex> Range.sort(0..10, :descending)
       10..0
-
-      iex> Range.sort(10..0, :descending)
-      10..0
   """
   @spec sort(Range.t, :ascending | :descending) :: Range.t
   def sort(range, order \\ :ascending)
@@ -190,20 +178,11 @@ defmodule Crutches.Range do
 
   ## Examples
 
-      iex> Range.union(1..5, 4..8)
-      1..8
-
-      iex> Range.union(-1..8, -3..4)
-      -3..8
-
       iex> Range.union(1..3, 4..6)
       1..6
 
-      iex> Range.union(1..1, 2..2)
-      1..2
-
-      iex> Range.union(1..3, 3..6)
-      1..6
+      iex> Range.union(1..5, 4..8)
+      1..8
 
       iex> Range.union(3..6, 1..3)
       1..6
