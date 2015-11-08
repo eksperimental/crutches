@@ -56,8 +56,8 @@ defmodule Crutches.Range do
   """
   @spec contiguous?(Range.t, Range.t) :: boolean
   def contiguous?(range1, range2) do
-    a..b = normalize_order(range1)
-    x..y = normalize_order(range2)
+    a..b = sort(range1)
+    x..y = sort(range2)
     if (b + 1 == x) or (y + 1 == a) do
       true
     else
@@ -96,12 +96,61 @@ defmodule Crutches.Range do
   @spec intersection(Range.t, Range.t) :: Range.t | nil
   def intersection(range1, range2) do
     if overlaps?(range1, range2) do
-      a..b = normalize_order(range1)
-      x..y = normalize_order(range2)
+      a..b = sort(range1)
+      x..y = sort(range2)
       max(a, x)..min(b, y)
     else
       nil
     end
+  end
+
+  @doc """
+  Swaps the order of the first and last limits in the range.
+
+  ## Examples
+
+    iex> Range.reverse(0..10)
+    10..0
+
+    iex> Range.reverse(10..0)
+    0..10
+  """
+  @spec reverse(Range.t) :: Range.t
+  def reverse(range)
+  def reverse(first..last) do
+    last..first
+  end
+
+  @doc """
+  Sorts the `range` by the given `order`.
+
+  `order` can take either `:ascending` or `:descending`.
+  If no `order` is specified, `:ascending` order is used.
+
+  ## Examples
+
+    iex> Range.sort(0..10)
+    0..10
+
+    iex> Range.sort(10..0)
+    0..10
+
+    iex> Range.sort(0..10, :descending)
+    10..0
+
+    iex> Range.sort(10..0, :descending)
+    10..0
+  """
+  @spec sort(Range.t, :ascending | :descending) :: Range.t
+  def sort(range, order \\ :ascending)
+
+  def sort(first..last, order)
+  when (order == :ascending and first > last) or (order == :descending and last > first) do
+    last..first
+  end
+
+  def sort(_first.._last=range, order) when order in [:ascending, :descending] do
+    range
   end
 
   @doc ~S"""
@@ -109,7 +158,7 @@ defmodule Crutches.Range do
 
   A union the represented by the smallest element and the biggest integers in
   both ranges, provided that the ranges overlap or are contiguous.
-  
+
   Note that the returned range, if any, will be in ascending order.
 
   ## Examples
@@ -135,18 +184,11 @@ defmodule Crutches.Range do
   @spec union(Range.t, Range.t) :: Range.t | nil
   def union(range1, range2) do
     if overlaps?(range1, range2) or contiguous?(range1, range2) do
-      a..b = normalize_order(range1)
-      x..y = normalize_order(range2)
+      a..b = sort(range1)
+      x..y = sort(range2)
       min(a, x)..max(b, y)
     else
       nil
     end
   end
-
-  # Private helper function that flips a range's order so that it's ascending.
-  @spec normalize_order(Range.t) :: Range.t
-  defp normalize_order(first..last) when first > last,
-    do: last..first
-  defp normalize_order(range),
-    do: range
 end
