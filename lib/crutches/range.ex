@@ -69,6 +69,11 @@ defmodule Crutches.Range do
       5..5
   """
   @spec intersection(Range.t, Range.t) :: Range.t | nil
+  def intersection(range1, range2)
+  def intersection(a..b=range1, x..y=_range2) when (a == x and b == y) or (a == y and b == x) do
+    sort(range1)
+  end
+
   def intersection(_.._=range1, _.._=range2) do
     if overlaps?(range1, range2) do
       a..b = sort(range1)
@@ -182,6 +187,11 @@ defmodule Crutches.Range do
       1..6
   """
   @spec union(Range.t, Range.t) :: Range.t | nil
+  def union(range1, range2)
+  def union(a..b=range1, x..y=_range2) when (a == x and b == y) or (a == y and b == x) do
+    sort(range1)
+  end
+
   def union(_.._=range1, _.._=range2) do
     if overlaps?(range1, range2) or contiguous?(range1, range2) do
       a..b = sort(range1)
