@@ -55,7 +55,7 @@ defmodule Crutches.Range do
     false
   """
   @spec contiguous?(Range.t, Range.t) :: boolean
-  def contiguous?(range1, range2) do
+  def contiguous?(_.._=range1, _.._=range2) do
     a..b = sort(range1)
     x..y = sort(range2)
     if (b + 1 == x) or (y + 1 == a) do
@@ -94,7 +94,7 @@ defmodule Crutches.Range do
       5..5
   """
   @spec intersection(Range.t, Range.t) :: Range.t | nil
-  def intersection(range1, range2) do
+  def intersection(_.._=range1, _.._=range2) do
     if overlaps?(range1, range2) do
       a..b = sort(range1)
       x..y = sort(range2)
@@ -182,7 +182,7 @@ defmodule Crutches.Range do
       1..6
   """
   @spec union(Range.t, Range.t) :: Range.t | nil
-  def union(range1, range2) do
+  def union(_.._=range1, _.._=range2) do
     if overlaps?(range1, range2) or contiguous?(range1, range2) do
       a..b = sort(range1)
       x..y = sort(range2)
