@@ -26,10 +26,10 @@ defmodule Crutches.Range do
     do: false
 
   @doc """
-  Determines if two ranges are contiguos.
+  Determines if two ranges are contiguous.
 
   Note that the order of the limits does not matter to determine whether the ranges are contiguous
-  or not (eg. `1..3` and `4..6` are contiguos, same as `3..1` and `4..6`).
+  or not (eg. `1..3` and `4..6` are contiguous, same as `3..1` and `4..6`).
 
   If the ranges overlap each other, it will return `false`.
 
@@ -52,7 +52,7 @@ defmodule Crutches.Range do
       false
   """
   @spec contiguous?(Range.t, Range.t) :: boolean
-  def contiguous?(_.._=range1, _.._=range2) do
+  def contiguous?(_.._ = range1, _.._ = range2) do
     a..b = sort(range1)
     x..y = sort(range2)
     if (b + 1 == x) or (y + 1 == a) do
@@ -89,11 +89,11 @@ defmodule Crutches.Range do
   """
   @spec intersection(Range.t, Range.t) :: Range.t | nil
   def intersection(range1, range2)
-  def intersection(a..b=range1, x..y=_range2) when (a == x and b == y) or (a == y and b == x) do
+  def intersection(a..b = range1, x..y = _range2) when (a == x and b == y) or (a == y and b == x) do
     sort(range1)
   end
 
-  def intersection(_.._=range1, _.._=range2) do
+  def intersection(_.._ = range1, _.._ = range2) do
     if overlaps?(range1, range2) do
       a..b = sort(range1)
       x..y = sort(range2)
@@ -164,7 +164,7 @@ defmodule Crutches.Range do
     last..first
   end
 
-  def sort(_first.._last=range, order) when order in [:ascending, :descending] do
+  def sort(_first.._last = range, order) when order in [:ascending, :descending] do
     range
   end
 
@@ -189,11 +189,11 @@ defmodule Crutches.Range do
   """
   @spec union(Range.t, Range.t) :: Range.t | nil
   def union(range1, range2)
-  def union(a..b=range1, x..y=_range2) when (a == x and b == y) or (a == y and b == x) do
+  def union(a..b = range1, x..y = _range2) when (a == x and b == y) or (a == y and b == x) do
     sort(range1)
   end
 
-  def union(_.._=range1, _.._=range2) do
+  def union(_.._ = range1, _.._ = range2) do
     if overlaps?(range1, range2) or contiguous?(range1, range2) do
       a..b = sort(range1)
       x..y = sort(range2)
